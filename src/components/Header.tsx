@@ -21,7 +21,7 @@ const Header: React.FC<Props> = ({ user, onLoginClick, onDocsClick }) => {
           <h1 className="text-xl font-black tracking-tighter text-slate-900">AskData<span className="text-indigo-600">AI</span></h1>
         </div>
 
-        <nav className="flex items-center space-x-8">
+        <nav className="flex items-center space-x-4 md:space-x-8">
           <button onClick={onDocsClick} className="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 transition-colors">
             <FileText className="w-4 h-4" />
             <span>Docs</span>

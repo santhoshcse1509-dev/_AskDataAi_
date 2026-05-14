@@ -150,10 +150,10 @@ const App: React.FC = () => {
                   </span>
                   Deployment Ready • Free Forever
                 </div>
-                <h2 className="text-7xl font-extrabold text-slate-900 tracking-tighter leading-[0.9]">
+                <h2 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tighter leading-[0.9]">
                   Chat with your <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Spreadsheets</span>
                 </h2>
-                <p className="text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+                <p className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
                   Upload CSV or Excel files. Ask anything. Get instant insights. 
                   Private, browser-native processing powered by Gemini AI.
                 </p>
@@ -167,14 +167,14 @@ const App: React.FC = () => {
                 />
                 <button 
                   onClick={loadSampleData}
-                  className="text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest flex items-center justify-center w-full space-x-2 group"
+                  className="text-[10px] md:text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest flex items-center justify-center w-full space-x-2 group"
                 >
                   <span>No file? Try our sample Sales dataset</span>
                   <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
                 </button>
               </div>
 
-              <div className="flex items-center space-x-12 pt-8">
+              <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12 md:space-x-12 pt-8">
                  {[
                    { label: 'Private', value: '100%' },
                    { label: 'Access', value: 'Free' },
@@ -185,7 +185,7 @@ const App: React.FC = () => {
                        <p className="text-2xl font-black text-slate-900">{item.value}</p>
                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</p>
                      </div>
-                     {i < 2 && <div className="w-px h-8 bg-slate-200"></div>}
+                     {i < 2 && <div className="hidden md:block w-px h-8 bg-slate-200"></div>}
                    </React.Fragment>
                  ))}
               </div>
@@ -196,15 +196,15 @@ const App: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="grid grid-cols-1 lg:grid-cols-4 gap-8"
+              className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8"
             >
               <aside className="lg:col-span-1 space-y-6">
                 <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col space-y-4 ring-1 ring-slate-100">
                   <div className="flex items-center space-x-3">
-                     <div className="p-3 bg-indigo-600 rounded-2xl text-white shadow-lg shadow-indigo-100">
+                     <div className="p-3 bg-indigo-600 rounded-2xl text-white shadow-lg shadow-indigo-100 flex-shrink-0">
                        <Database className="w-5 h-5" />
                      </div>
-                     <div className="truncate">
+                     <div className="min-w-0">
                        <p className="text-sm font-bold text-slate-900 truncate">{tableData.fileName}</p>
                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider">{tableData.rows.length} rows loaded</p>
                      </div>
@@ -232,18 +232,18 @@ const App: React.FC = () => {
                       exit={{ opacity: 0, y: -10 }}
                       className="space-y-6"
                     >
-                      <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-6">
-                        <div className="flex items-center justify-between border-b border-slate-50 pb-6">
-                           <div className="space-y-1">
+                      <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-6 overflow-hidden">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-50 pb-6 gap-4">
+                           <div className="space-y-1 min-w-0">
                              <h3 className="font-black text-slate-900 flex items-center uppercase text-xs tracking-widest">
-                               <Sparkles className="w-4 h-4 text-indigo-600 mr-2" /> Result Preview
+                               <Sparkles className="w-4 h-4 text-indigo-600 mr-2 flex-shrink-0" /> Result Preview
                              </h3>
-                             <p className="text-xs text-slate-400 font-medium">{queryResult.explanation}</p>
+                             <p className="text-xs text-slate-400 font-medium truncate sm:whitespace-normal">{queryResult.explanation}</p>
                            </div>
-                           <div className="relative" ref={exportMenuRef}>
+                           <div className="relative self-start sm:self-auto" ref={exportMenuRef}>
                               <button
                                 onClick={() => setShowExportMenu(!showExportMenu)}
-                                className="flex items-center space-x-2 bg-slate-900 text-white px-6 py-2.5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all hover:bg-slate-800 shadow-xl shadow-slate-200"
+                                className="flex items-center space-x-2 bg-slate-900 text-white px-6 py-2.5 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all hover:bg-slate-800 shadow-xl shadow-slate-200 whitespace-nowrap"
                               >
                                 <span>Download Results</span>
                                 <ChevronDown className={`w-4 h-4 transition-transform ${showExportMenu ? 'rotate-180' : ''}`} />
@@ -254,7 +254,7 @@ const App: React.FC = () => {
                                     initial={{ opacity: 0, scale: 0.95, y: 10 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                    className="absolute right-0 mt-3 w-56 glass-panel rounded-2xl shadow-2xl z-50 overflow-hidden ring-1 ring-slate-200"
+                                    className="absolute right-0 sm:right-0 left-0 sm:left-auto mt-3 w-full sm:w-56 glass-panel rounded-2xl shadow-2xl z-50 overflow-hidden ring-1 ring-slate-200"
                                   >
                                      {['csv', 'xlsx', 'pdf'].map(fmt => (
                                        <button 

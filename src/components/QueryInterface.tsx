@@ -100,7 +100,7 @@ const QueryInterface: React.FC<Props> = ({ tableData, onQueryResult, externalQue
         <form onSubmit={handleAsk} className="relative">
           <input
             type="text"
-            className={`w-full pl-8 pr-36 py-6 border-2 rounded-2xl text-lg font-bold outline-none transition-all
+            className={`w-full pl-6 sm:pl-8 pr-16 sm:pr-36 py-4 sm:py-6 border-2 rounded-2xl text-base sm:text-lg font-bold outline-none transition-all
               ${error 
                 ? 'border-red-100 focus:border-red-500 bg-red-50/20 text-red-900' 
                 : 'border-slate-50 focus:border-indigo-500 bg-slate-50/50 focus:bg-white shadow-inner focus:shadow-2xl focus:shadow-indigo-100/50 text-indigo-950'
@@ -113,13 +113,13 @@ const QueryInterface: React.FC<Props> = ({ tableData, onQueryResult, externalQue
           <button
             type="submit"
             disabled={isProcessing || !query.trim()}
-            className="absolute right-3 top-3 bottom-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-black uppercase tracking-widest text-[10px] px-8 rounded-xl transition-all shadow-lg shadow-indigo-100 hover:shadow-indigo-200 active:scale-95 flex items-center justify-center min-w-[120px]"
+            className="absolute right-2 sm:right-3 top-2 sm:top-3 bottom-2 sm:bottom-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-black uppercase tracking-widest text-[10px] px-4 sm:px-8 rounded-xl transition-all shadow-lg shadow-indigo-100 hover:shadow-indigo-200 active:scale-95 flex items-center justify-center min-w-[50px] sm:min-w-[120px]"
           >
             {isProcessing ? (
-               <Loader2 className="w-5 h-5 animate-spin" />
+               <Loader2 className="w-4 sm:w-5 h-4 sm:h-5 animate-spin" />
             ) : (
               <div className="flex items-center space-x-2">
-                <span>Analyze</span>
+                <span className="hidden sm:inline">Analyze</span>
                 <Send className="w-4 h-4" />
               </div>
             )}
@@ -144,7 +144,7 @@ const QueryInterface: React.FC<Props> = ({ tableData, onQueryResult, externalQue
         )}
       </AnimatePresence>
 
-      <div className="flex items-center space-x-4">
+      <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
         <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Try:</span>
         <div className="flex flex-wrap gap-2">
           {suggestions.map((s, i) => (
