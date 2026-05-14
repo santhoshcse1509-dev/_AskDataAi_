@@ -39,8 +39,11 @@ const Header: React.FC<Props> = ({ user, onLoginClick, onDocsClick }) => {
                   <span>Logout</span>
                 </button>
               </div>
-              <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center font-black text-indigo-600 border border-slate-200 shadow-sm">
-                {user.name[0]}
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center font-black text-indigo-600 border border-slate-200 shadow-sm overflow-hidden">
+                {user.avatar 
+                  ? <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                  : user.name[0].toUpperCase()
+                }
               </div>
             </div>
           ) : (

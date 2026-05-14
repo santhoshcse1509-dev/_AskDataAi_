@@ -36,6 +36,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  avatar?: string;
   // Add missing properties for Pro plan to resolve errors in PricingPage and PaymentService
   plan?: 'free' | 'pro';
   isSubscriptionActive?: boolean;
