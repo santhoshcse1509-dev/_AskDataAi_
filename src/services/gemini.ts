@@ -2,14 +2,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AIResponse, ColumnMetadata } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 export class GeminiService {
   static async generateSQL(
     prompt: string,
     columns: ColumnMetadata[],
     sampleData: any[]
   ): Promise<AIResponse> {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
     const schemaString = columns
       .map(c => `- ${c.name} (Type: ${c.type})`)
       .join('\n');
