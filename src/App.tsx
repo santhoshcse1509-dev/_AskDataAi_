@@ -38,7 +38,14 @@ const App: React.FC = () => {
   const exportMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const syncAuth = () => setUser(AuthService.getCurrentUser());
+    const syncAuth = () => {
+      const currentUser = AuthService.getCurrentUser();
+      setUser(currentUser);
+      if (!currentUser) {
+        setTableData(null);
+        setQueryResult(null);
+      }
+    };
     window.addEventListener('auth-change', syncAuth);
     return () => window.removeEventListener('auth-change', syncAuth);
   }, []);
@@ -160,16 +167,26 @@ const App: React.FC = () => {
               </div>
               
               <div className="w-full max-w-xl space-y-4">
-                <FileUploader 
-                  onUploadSuccess={handleUploadSuccess} 
-                  isLoading={isUploading} 
-                  setIsLoading={setIsUploading} 
-                />
+                {user ? (
+                  <FileUploader 
+                    onUploadSuccess={handleUploadSuccess} 
+                    isLoading={isUploading} 
+                    setIsLoading={setIsUploading} 
+                  />
+                ) : (
+                  <button 
+                    onClick={() => setIsAuthModalOpen(true)}
+                    className="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-xl shadow-indigo-200 hover:shadow-indigo-300 flex items-center justify-center space-x-3 active:scale-[0.98]"
+                  >
+                    <span>Sign In to Get Started</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
                 <button 
-                  onClick={loadSampleData}
+                  onClick={() => user ? loadSampleData() : setIsAuthModalOpen(true)}
                   className="text-[10px] md:text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors uppercase tracking-widest flex items-center justify-center w-full space-x-2 group"
                 >
-                  <span>No file? Try our sample Sales dataset</span>
+                  <span>{user ? "No file? Try our sample Sales dataset" : "Or sign in to try our sample dataset"}</span>
                   <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
                 </button>
               </div>
