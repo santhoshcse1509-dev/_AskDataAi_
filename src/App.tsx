@@ -38,9 +38,6 @@ const App: React.FC = () => {
   const exportMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Sync Firebase auth state with local session
-    AuthService.listenToAuthState();
-
     // Sync React state whenever any auth change fires
     const syncAuth = () => {
       const currentUser = AuthService.getCurrentUser();

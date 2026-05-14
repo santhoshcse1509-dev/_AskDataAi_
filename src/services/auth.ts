@@ -1,34 +1,32 @@
-
 import { User } from '../types';
-import { auth, googleProvider } from './firebase';
-import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 
+const USERS_KEY = 'askdata_users_db';
 const CURRENT_USER_KEY = 'askdata_session';
 
 export class AuthService {
-  // ── Google OAuth ──────────────────────────────────────────────────────────
-  static async signInWithGoogle(): Promise<User> {
-    const result = await signInWithPopup(auth, googleProvider);
-    const firebaseUser = result.user;
+  // ── Google OAuth (via @react-oauth/google credential) ─────────────────────
+  static loginWithGoogleCredential(credential: string): User {
+    // The credential is a JWT — decode its payload (base64)
+    const payload = JSON.parse(atob(credential.split('.')[1]));
 
     const user: User = {
-      id: firebaseUser.uid,
-      email: firebaseUser.email || '',
-      name: firebaseUser.displayName || firebaseUser.email || 'User',
-      avatar: firebaseUser.photoURL || undefined,
+      id: payload.sub,
+      email: payload.email || '',
+      name: payload.name || payload.email || 'User',
+      avatar: payload.picture || undefined,
       plan: 'free',
       isSubscriptionActive: false,
     };
 
+    // Persist the session
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     window.dispatchEvent(new Event('auth-change'));
     return user;
   }
 
-  // ── Email/Name (legacy local) sign-up ─────────────────────────────────────
+  // ── Email/Name (local) sign-up ─────────────────────────────────────────────
   static async signup(email: string, name: string): Promise<User> {
     await new Promise(resolve => setTimeout(resolve, 800));
-    const USERS_KEY = 'askdata_users_db';
     const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     if (users.find((u: User) => u.email === email)) {
       throw new Error('An account with this email already exists');
@@ -47,7 +45,6 @@ export class AuthService {
 
   static async loginWithEmail(email: string): Promise<User> {
     await new Promise(resolve => setTimeout(resolve, 500));
-    const USERS_KEY = 'askdata_users_db';
     const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     const user = users.find((u: User) => u.email === email);
     if (!user) throw new Error('No account found. Please sign up first.');
@@ -56,37 +53,21 @@ export class AuthService {
     return user;
   }
 
-  // ── Logout ────────────────────────────────────────────────────────────────
-  static async logout() {
-    try { await signOut(auth); } catch (_) {}
+  // ── Logout ─────────────────────────────────────────────────────────────────
+  static logout() {
     localStorage.removeItem(CURRENT_USER_KEY);
     window.dispatchEvent(new Event('auth-change'));
   }
 
-  // ── Session ───────────────────────────────────────────────────────────────
+  // ── Session ────────────────────────────────────────────────────────────────
   static getCurrentUser(): User | null {
     const userJson = localStorage.getItem(CURRENT_USER_KEY);
     if (!userJson) return null;
     return JSON.parse(userJson);
   }
 
-  /** Call once in App root to keep session in sync with Firebase state */
-  static listenToAuthState() {
-    onAuthStateChanged(auth, (firebaseUser) => {
-      if (!firebaseUser) {
-        const current = this.getCurrentUser();
-        // Only clear if it was a Google session (has uid-like id length)
-        if (current && current.id.length > 10) {
-          localStorage.removeItem(CURRENT_USER_KEY);
-          window.dispatchEvent(new Event('auth-change'));
-        }
-      }
-    });
-  }
-
-  // ── Pro plan upgrade ──────────────────────────────────────────────────────
+  // ── Pro plan upgrade ───────────────────────────────────────────────────────
   static upgradeToPro(userId: string) {
-    const USERS_KEY = 'askdata_users_db';
     const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     const userIndex = users.findIndex((u: User) => u.id === userId);
     if (userIndex !== -1) {
@@ -103,4 +84,3 @@ export class AuthService {
     }
   }
 }
-
