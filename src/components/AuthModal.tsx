@@ -13,9 +13,24 @@ interface Props {
 const AuthModal: React.FC<Props> = ({ isOpen, onClose, onSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const validateEmail = (val: string) => {
+    if (!val) {
+      setEmailError('');
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(val)) {
+      setEmailError('Invalid email format');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
 
   if (!isOpen) return null;
 
@@ -38,6 +53,11 @@ const AuthModal: React.FC<Props> = ({ isOpen, onClose, onSuccess }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!validateEmail(email)) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       if (isLogin) {
@@ -137,17 +157,36 @@ const AuthModal: React.FC<Props> = ({ isOpen, onClose, onSuccess }) => {
                 Email Address
               </label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-indigo-500 transition-colors" />
+                <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${emailError ? 'text-red-500' : 'text-slate-300 group-focus-within:text-indigo-500'}`} />
                 <input
                   type="email"
                   required
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={e => {
+                    setEmail(e.target.value);
+                    if (e.target.value) validateEmail(e.target.value);
+                    else setEmailError('');
+                  }}
+                  onBlur={e => {
+                    if (e.target.value) validateEmail(e.target.value);
+                  }}
                   disabled={isLoading}
-                  className="w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 border-2 border-slate-50 focus:border-indigo-500 focus:bg-white outline-none transition-all disabled:opacity-50 font-bold"
+                  className={`w-full pl-12 pr-4 py-4 rounded-2xl bg-slate-50 border-2 outline-none transition-all disabled:opacity-50 font-bold ${emailError ? 'border-red-500 focus:bg-white' : 'border-slate-50 focus:border-indigo-500 focus:bg-white'}`}
                   placeholder="name@email.com"
                 />
               </div>
+              <AnimatePresence>
+                {emailError && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                    animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
+                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                    className="text-red-500 text-[10px] font-black uppercase tracking-widest ml-1"
+                  >
+                    {emailError}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </div>
 
             {error && (
