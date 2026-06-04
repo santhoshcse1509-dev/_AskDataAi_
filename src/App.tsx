@@ -8,6 +8,8 @@ import QueryHistory from './components/QueryHistory';
 import AuthModal from './components/AuthModal';
 import DocsModal from './components/DocsModal';
 import LegalPages from './components/LegalPages';
+import PricingModal from './components/PricingModal';
+import CheckoutModal from './components/CheckoutModal';
 import { TableData, QueryResult, QueryHistoryItem, User } from './types';
 import { DataService } from './services/db';
 import { AuthService } from './services/auth';
@@ -32,6 +34,8 @@ const App: React.FC = () => {
   const [queryHistory, setQueryHistory] = useState<QueryHistoryItem[]>([]);
   const [selectedHistoryQuery, setSelectedHistoryQuery] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isDocsOpen, setIsDocsOpen] = useState(false);
   const [legalType, setLegalType] = useState<'privacy' | 'terms' | 'refund' | 'contact' | null>(null);
   
@@ -133,10 +137,28 @@ const App: React.FC = () => {
         user={user} 
         onLoginClick={() => setIsAuthModalOpen(true)} 
         onDocsClick={() => setIsDocsOpen(true)}
+        onPricingClick={() => setIsPricingOpen(true)}
       />
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onSuccess={() => {}} />
       <DocsModal isOpen={isDocsOpen} onClose={() => setIsDocsOpen(false)} />
+      <PricingModal 
+        isOpen={isPricingOpen} 
+        onClose={() => setIsPricingOpen(false)} 
+        user={user}
+        onSubscribeClick={() => {
+          setIsPricingOpen(false);
+          setIsCheckoutOpen(true);
+        }}
+      />
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        user={user}
+        onSuccess={() => {
+          // The current user state will automatically sync via auth-change event
+        }}
+      />
       {legalType && <LegalPages type={legalType} onClose={() => setLegalType(null)} />}
       
       <main className="max-w-7xl mx-auto px-6 pt-12">
